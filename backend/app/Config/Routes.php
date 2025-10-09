@@ -9,3 +9,4 @@ $routes->get('/', 'Users::index');
 $routes->get('/loginPage', 'Users::login');
 $routes->get('/signupPage', 'Users::signup');
 $routes->get('/moodboardPage', 'Users::moodboard');
+$routes->get('/roadmapPage', 'Users::roadmap');
