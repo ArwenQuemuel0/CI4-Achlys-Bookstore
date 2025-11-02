@@ -60,9 +60,15 @@
 
 <body class="flex flex-col min-h-screen">
     <div class="flex flex-col min-h-screen overlay">
-        <?= view('components/header.php') ?>
 
         <main class="flex-grow">
+            <header class="flex justify-between items-center shadow-md px-6 py-4 text-gray-100 custom-neutral">
+                <h1 class="text-3xl tracking-wide header-title">Stock Management</h1>
+                <div class="flex items-center space-x-4">
+                    <span class="font-semibold">Welcome, Admin</span>
+                    <img src="/assets/profile_placeholder.png" alt="Admin Avatar" class="border border-[#A99D92] rounded-full w-10 h-10">
+                </div>
+            </header>
             <section class="flex justify-center items-center py-32 text-center">
                 <div class="bg-white/10 backdrop-blur-sm mx-auto p-8 px-4 rounded-2xl max-w-4xl">
                     <div class="flex justify-center items-center bg-[#8B7E74] mx-auto mb-6 rounded-full w-20 h-20 text-white text-3xl">📚</div>
@@ -147,7 +153,7 @@
             </section>
 
             <!-- CTA -->
-            <section id="cta-section" class="bg-white/90 backdrop-blur-sm py-32 text-gray-900 w-full">
+            <section id="cta-section" class="bg-white/90 backdrop-blur-sm py-32 w-full text-gray-900">
                 <div class="text-center">
                     <?= view('components/cta', [
                         'heading' => 'Discover Your Next Favorite Book',
