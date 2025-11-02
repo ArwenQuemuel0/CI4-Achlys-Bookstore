@@ -104,7 +104,7 @@
         </nav>
 
         <div class="p-4 border-[#A99D92]/30 border-t">
-            <a href="/logout" class="block bg-[#A99D92] hover:bg-[#7C6F66] py-2 rounded-lg text-center transition">Logout</a>
+            <a href="/loginPage" class="block bg-[#A99D92] hover:bg-[#7C6F66] py-2 rounded-lg text-center transition">Logout</a>
         </div>
     </aside>
 </body>

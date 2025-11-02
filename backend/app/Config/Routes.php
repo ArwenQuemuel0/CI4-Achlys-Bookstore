@@ -10,3 +10,6 @@ $routes->get('/loginPage', 'Users::login');
 $routes->get('/signupPage', 'Users::signup');
 $routes->get('/moodboardPage', 'Users::moodboard');
 $routes->get('/roadmapPage', 'Users::roadmap');
+
+$routes->get('/admin/adminDashboard', 'Admin::showDashboardPage');
+$routes->post('loginPage', 'Auth::login');
