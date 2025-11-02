@@ -12,14 +12,13 @@ class ClearDatabaseSeeder extends Seeder
 
         // Order matters: child tables first, then parents
         // List down your tables here
-        $tablesInOrder = [];
+        $tablesInOrder = ['users'];
 
         $db->disableForeignKeyChecks();
 
         try {
             foreach ($tablesInOrder as $table) {
                 if (method_exists($db, 'tableExists') && $db->tableExists($table)) {
-                    // TRUNCATE resets AUTO_INCREMENT in MySQL
                     $db->table($table)->truncate();
                 }
             }
