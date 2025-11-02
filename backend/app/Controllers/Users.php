@@ -9,7 +9,7 @@ class Users extends BaseController
 {
     public function index()
     {
-        return view('user/landingPage');
+        return view('admin/adminDashboard');
     }
     public function login()
     {
