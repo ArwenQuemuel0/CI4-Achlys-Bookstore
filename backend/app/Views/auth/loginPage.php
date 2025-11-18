@@ -9,7 +9,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Roboto+Slab:wght@100..900&display=swap"
+        rel="stylesheet">
 
     <style>
         body {
@@ -60,6 +61,28 @@
             position: relative;
             z-index: 1;
         }
+
+        .focus-ring:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(139, 126, 116, 0.4);
+        }
+
+        .btn-primary {
+            background-color: #8B7E74;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #A99D92;
+        }
+
+        .link {
+            color: #8B7E74;
+        }
+
+        .link:hover {
+            color: #A99D92;
+        }
     </style>
 </head>
 
@@ -81,48 +104,62 @@
 
         <!-- Right Section (Login Form) -->
         <div class="flex justify-center items-center bg-white px-6 py-16 md:w-1/3">
-            <div class="bg-white bg-opacity-90 shadow-2xl p-10 rounded-2xl w-full max-w-md">
+            <div class="bg-white shadow-2xl p-10 rounded-2xl w-full max-w-md">
+
+                <!-- Header -->
                 <div class="mb-8 text-center">
                     <img src="/assets/circle_logo.png" alt="Achlys Circle Logo" class="mx-auto mb-4 w-16 h-16">
                     <h2 class="font-bold text-gray-900 text-3xl header-title">Welcome Back</h2>
                     <p class="mt-2 text-gray-600">Log in to continue your reading journey</p>
                 </div>
 
-                <form action="#" method="post" class="space-y-6">
+                <!-- Login Form -->
+                <form action="/loginPage" method="post" class="space-y-5">
+                    <?= csrf_field() ?>
+
+                    <!-- Email -->
                     <div>
-                        <label for="email" class="block mb-3 font-semibold text-gray-700">Email Address</label>
-                        <input type="email" id="email" name="email" required
-                            class="px-4 py-4 border-2 border-gray-200 focus:border-[#8B7E74] rounded-xl focus:outline-none focus:ring-[#8B7E74]/20 focus:ring-4 w-full text-gray-900 transition-all duration-300 placeholder-gray-500"
-                            placeholder="Enter your email" />
+                        <label for="email" class="block mb-2 font-semibold text-gray-700">Email Address</label>
+                        <input type="email" name="email" id="email" required
+                            value="<?= esc($old['email'] ?? '') ?>"
+                            placeholder="Enter your email"
+                            class="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus-ring text-gray-900 <?= isset($errors['email']) ? 'border-red-500' : 'border-gray-200' ?>">
+                        <?php if (!empty($errors['email'])): ?>
+                            <p class="mt-1 text-red-600 text-sm"><?= esc($errors['email']) ?></p>
+                        <?php endif; ?>
                     </div>
 
+                    <!-- Password -->
                     <div>
-                        <label for="password" class="block mb-3 font-semibold text-gray-700">Password</label>
-                        <input type="password" id="password" name="password" required
-                            class="px-4 py-4 border-2 border-gray-200 focus:border-[#8B7E74] rounded-xl focus:outline-none focus:ring-[#8B7E74]/20 focus:ring-4 w-full text-gray-900 transition-all duration-300 placeholder-gray-500"
-                            placeholder="Enter your password" />
+                        <label for="password" class="block mb-2 font-semibold text-gray-700">Password</label>
+                        <input type="password" name="password" id="password" required
+                            placeholder="Enter your password"
+                            class="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus-ring text-gray-900 <?= isset($errors['password']) ? 'border-red-500' : 'border-gray-200' ?>">
+                        <?php if (!empty($errors['password'])): ?>
+                            <p class="mt-1 text-red-600 text-sm"><?= esc($errors['password']) ?></p>
+                        <?php endif; ?>
                     </div>
-                    <!--
-                    <div class="flex justify-end text-sm text-right">
-                        <a href="/forgot-password" class="text-[#8B7E74] hover:text-[#A99D92] transition-colors">Forgot password?</a>
-                    </div>
-    -->
+
+                    <!-- Submit -->
                     <button type="submit"
-                        class="bg-[#8B7E74] hover:bg-[#A99D92] shadow-lg px-6 py-4 rounded-full focus:outline-none focus:ring-[#8B7E74]/50 focus:ring-4 w-full font-semibold text-white text-lg transition-all duration-300">
+                        class="py-3 rounded-full focus:outline-none focus:ring-[#8B7E74]/50 focus:ring-4 w-full font-semibold text-lg btn-primary">
                         Log In
                     </button>
-                </form>
 
-                <div class="mt-6 text-center">
-                    <p class="text-gray-700">
+                    <!-- Sign Up Link -->
+                    <p class="mt-4 text-gray-700 text-sm text-center">
                         Don’t have an account?
-                        <a href="/signupPage" class="font-semibold text-[#8B7E74] hover:text-[#A99D92] transition-colors">Create one now</a>
+                        <a href="/signupPage" class="font-semibold transition-colors link">Create one now</a>
                     </p>
+
+                    <!-- Back to Home Button -->
                     <?= view('components/buttons/back_button', [
                         'href' => '/',
                         'label' => 'Back to Home'
                     ]) ?>
-                </div>
+
+                </form>
+
             </div>
         </div>
 
