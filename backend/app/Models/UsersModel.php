@@ -4,13 +4,13 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class UserModel extends Model
+class UsersModel extends Model
 {
     protected $table            = 'users';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
-    protected $entity     = '\App\\Entities\\User';
-    protected $useSoftDeletes   = false;
+    protected $returnType = '\App\Entities\User';
+    protected $useSoftDeletes   = true;
     protected $protectFields    = true;
     protected $allowedFields    = [
         'first_name',
@@ -19,6 +19,9 @@ class UserModel extends Model
         'email',
         'password_hash',
         'type',
+        'created_at',
+        'updated_at',
+        'deleted_at'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -28,7 +31,7 @@ class UserModel extends Model
     protected array $castHandlers = [];
 
     // Dates
-    protected $useTimestamps = false;
+    protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
