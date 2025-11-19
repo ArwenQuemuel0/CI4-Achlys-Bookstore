@@ -7,24 +7,14 @@ use App\Models\UsersModel;
 
 class Auth extends BaseController
 {
-    /**
-     * Show Login Page
-     */
     public function showLogin()
     {
         $session = session();
-
-        // Get any error messages or previously entered data from flashdata
-        // Flashdata is temporary data that survives one page redirect
         $errors = $session->getFlashdata('errors') ?? [];
         $old = $session->getFlashdata('old') ?? [];
-
         return view('auth/loginPage', ['errors' => $errors, 'old' => $old]);
     }
 
-    /**
-     * Login User
-     */
     public function login()
     {
         $request = service('request');
@@ -36,7 +26,7 @@ class Auth extends BaseController
 
         $post = $request->getPost();
 
-        if (! $validation->run($post)) {
+        if (!$validation->run($post)) {
             $session->setFlashdata('errors', $validation->getErrors());
             $session->setFlashdata('old', $post);
             return redirect()->back()->withInput();
@@ -44,65 +34,52 @@ class Auth extends BaseController
 
         $userModel = new UsersModel();
         $email = trim($post['email']);
-
-        /** @var \App\Entities\User|null $user */
         $user = $userModel->where('email', $email)->first();
 
-        if (! $user) {
+        if (!$user || !password_verify($post['password'], $user->password_hash)) {
             $session->setFlashdata('errors', ['email' => 'Invalid email or password']);
             $session->setFlashdata('old', ['email' => $email]);
             return redirect()->back()->withInput();
         }
 
-        // verify password
-        if (! password_verify($post['password'], $user->password_hash)) {
-            $session->setFlashdata('errors', ['password' => 'Incorrect password']);
-            $session->setFlashdata('old', ['email' => $email]);
-            return redirect()->back()->withInput();
-        }
+        $type = strtolower($user->type ?? 'client');
 
-        // SESSION (object properties)
+        // Set session first
         $session->set('user', [
-            'id'           => $user->user_id,
-            'email'        => $user->email,
-            'first_name'   => $user->first_name,
-            'last_name'    => $user->last_name,
-            'type'         => strtolower($user->type),
-            //'display_name' => $this->createDisplayName($user),
+            'id'         => $user->user_id,
+            'email'      => $user->email,
+            'first_name' => $user->first_name,
+            'last_name'  => $user->last_name,
+            'type'       => $type,
         ]);
+
+        // Redirect based on type
+        if ($type === 'admin') {
+            return redirect()->to('/admin/adminDashboard');
+        }
 
         return redirect()->to('/');
     }
 
-    /**
-     * Logout User
-     */
     public function logout()
     {
         session()->destroy();
         return redirect()->to('/');
     }
 
-    /**
-     * Show Signup Page
-     */
     public function showSignup()
     {
         $session = session();
-
         if ($session->has('user')) {
             return redirect()->to('/');
         }
 
-        // Get any previous errors or form data from flashdata
         $errors = $session->getFlashdata('errors') ?? [];
         $old = $session->getFlashdata('old') ?? [];
 
-        // Show the signup form
         return view('auth/signupPage', ['errors' => $errors, 'old' => $old]);
     }
 
-    // Signup User
     public function signup()
     {
         $request = service('request');
@@ -118,7 +95,7 @@ class Auth extends BaseController
 
         $post = $request->getPost();
 
-        if (! $validation->run($post)) {
+        if (!$validation->run($post)) {
             $session->setFlashdata('errors', $validation->getErrors());
             $session->setFlashdata('old', $post);
             return redirect()->back()->withInput();
@@ -126,15 +103,11 @@ class Auth extends BaseController
 
         $userModel = new UsersModel();
 
-        // Check for duplicate emails
-
         if ($userModel->where('email', $post['email'])->first()) {
             $session->setFlashdata('errors', ['email' => 'Email is already registered']);
             $session->setFlashdata('old', $post);
             return redirect()->back()->withInput();
         }
-
-        // Insert user data
 
         $data = [
             'first_name'     => $post['first_name'],
@@ -147,7 +120,6 @@ class Auth extends BaseController
         ];
 
         $inserted = $userModel->insert($data);
-
         if ($inserted === false) {
             $session->setFlashdata('errors', ['general' => 'Could not create account']);
             $session->setFlashdata('old', $post);
@@ -156,18 +128,14 @@ class Auth extends BaseController
 
         $newUser = $userModel->find($inserted);
 
-        // SESSION (entity properties)
         $session->set('user', [
-            'id' => $newUser->id ?? null,
-            'email' => $newUser->email ?? null,
+            'id'         => $newUser->id ?? null,
+            'email'      => $newUser->email ?? null,
             'first_name' => $newUser->first_name ?? null,
-            'last_name' => $newUser->last_name ?? null,
-            'type' => $newUser->type ?? 'client',
-            // Create display name: "J D Smith" format
-            'display_name' => trim(($newUser->first_name[0] ?? '') . ' ' . ($newUser->middle_name[0] ?? '') . ' ' . ($newUser->last_name ?? '')),
+            'last_name'  => $newUser->last_name ?? null,
+            'type'       => $newUser->type ?? 'client',
         ]);
 
-        // Set success message and redirect to home page
         $session->setFlashdata('success', 'Account created successfully!');
         return redirect()->to('/');
     }

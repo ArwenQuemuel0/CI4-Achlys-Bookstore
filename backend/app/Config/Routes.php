@@ -16,4 +16,4 @@ $routes->post('/loginPage', 'Auth::login');
 $routes->post('/signupPage', 'Auth::signup');
 $routes->post('/logout', 'Auth::logout');
 
-$routes->get('/admin/adminDashboard', 'Admin::showDashboardPage');
+$routes->get('/admin/adminDashboard', 'Admin::showDashboard');
