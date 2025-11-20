@@ -45,8 +45,14 @@ class Admin extends BaseController
             $clientsCount = "Server Issue: " . $error;
         }
 
+        // Get the admin's first name from session (safe default)
+        $session = session();
+        $user = $session->get('user') ?? [];
+        $firstName = $user['first_name'] ?? 'Admin';
+
         return view('admin/adminDashboard', [
-            'clientsCount' => $clientsCount
+            'clientsCount' => $clientsCount,
+            'adminFirstName' => $firstName,
         ]);
     }
 }
