@@ -12,7 +12,13 @@ class Auth extends BaseController
         $session = session();
         $errors = $session->getFlashdata('errors') ?? [];
         $old = $session->getFlashdata('old') ?? [];
-        return view('auth/loginPage', ['errors' => $errors, 'old' => $old]);
+        $success = $session->getFlashdata('success') ?? null;
+
+        return view('auth/loginPage', [
+            'errors' => $errors,
+            'old' => $old,
+            'success' => $success,
+        ]);
     }
 
     public function login()
@@ -44,9 +50,9 @@ class Auth extends BaseController
 
         $type = strtolower($user->type ?? 'client');
 
-        // Set session first
+        // Set session first (use `id` as primary key)
         $session->set('user', [
-            'id'         => $user->user_id,
+            'id'         => $user->id,
             'email'      => $user->email,
             'first_name' => $user->first_name,
             'last_name'  => $user->last_name,
@@ -63,8 +69,10 @@ class Auth extends BaseController
 
     public function logout()
     {
-        session()->destroy();
-        return redirect()->to('/');
+        $session = session();
+        $session->destroy();
+
+        return redirect()->to('/'); // redirect to landing page
     }
 
     public function showSignup()
