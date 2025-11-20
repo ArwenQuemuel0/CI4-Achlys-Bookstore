@@ -42,7 +42,6 @@
             box-shadow: 0 4px 12px rgba(139, 126, 116, 0.3);
         }
 
-        /* Left Section with Darker Overlay */
         .bookstore-gradient {
             position: relative;
             background: url('https://static.vecteezy.com/system/resources/previews/022/336/538/non_2x/coffee-and-book-minimalist-background-illustration-ai-generative-free-photo.jpg') no-repeat center center;
@@ -130,15 +129,36 @@
                     </div>
 
                     <!-- Password -->
-                    <div>
+                    <div class="relative">
                         <label for="password" class="block mb-2 font-semibold text-gray-700">Password</label>
-                        <input type="password" name="password" id="password" required
-                            placeholder="Enter your password"
-                            class="w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus-ring text-gray-900 <?= isset($errors['password']) ? 'border-red-500' : 'border-gray-200' ?>">
+
+                        <div class="relative">
+                            <input type="password" name="password" id="password" required
+                                placeholder="Enter your password"
+                                class="w-full pr-10 px-4 py-3 border-2 rounded-xl text-gray-900 focus:outline-none focus:ring-4 focus-ring text-base <?= isset($errors['password']) ? 'border-red-500' : 'border-gray-200' ?>">
+
+                            <!-- Eye toggle button -->
+                            <button type="button" id="togglePasswordBtn"
+                                class="right-3 absolute inset-y-0 flex items-center text-gray-500">
+                                <svg id="icon-eye" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                        d="M2.5 12s4-7 9.5-7 9.5 7 9.5 7-4 7-9.5 7S2.5 12 2.5 12z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <svg id="icon-eye-off" xmlns="http://www.w3.org/2000/svg" class="hidden w-5 h-5"
+                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                        d="M3 3l18 18"></path>
+                                </svg>
+                            </button>
+                        </div>
+
                         <?php if (!empty($errors['password'])): ?>
                             <p class="mt-1 text-red-600 text-sm"><?= esc($errors['password']) ?></p>
                         <?php endif; ?>
                     </div>
+
 
                     <!-- Submit -->
                     <button type="submit"
@@ -164,6 +184,23 @@
         </div>
 
     </main>
+
+    <script>
+        const toggleBtn = document.getElementById("togglePasswordBtn");
+        const passwordInput = document.getElementById("password");
+        const iconEye = document.getElementById("icon-eye");
+        const iconEyeOff = document.getElementById("icon-eye-off");
+
+        toggleBtn.addEventListener("click", () => {
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+            } else {
+                passwordInput.type = "password";
+            }
+            iconEye.classList.toggle("hidden");
+            iconEyeOff.classList.toggle("hidden");
+        });
+    </script>
 
 </body>
 
