@@ -144,25 +144,85 @@
                         <!-- PASSWORD -->
                         <div>
                             <label class="block mb-2 font-semibold text-gray-700">Password</label>
-                            <input type="password" name="password" required
-                                placeholder="Create a password"
-                                class="px-4 py-4 border-2 <?= isset($errors['password']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
-                                aria-invalid="<?= isset($errors['password']) ? 'true' : 'false' ?>">
+
+                            <div class="relative">
+                                <input type="password" id="password" name="password" required
+                                    placeholder="Create a password"
+                                    class="px-4 py-4 border-2 <?= isset($errors['password']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
+                                    aria-invalid="<?= isset($errors['password']) ? 'true' : 'false' ?>">
+
+                                <button type="button" aria-label="Toggle password visibility"
+                                    id="togglePasswordBtn"
+                                    class="top-4 right-4 absolute p-1">
+                                    <svg id="icon-eye" xmlns="http://www.w3.org/2000/svg"
+                                        class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                            d="M2.5 12s4-7 9.5-7 9.5 7 9.5 7-4 7-9.5 7S2.5 12 2.5 12z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+
+                                    <svg id="icon-eye-off" xmlns="http://www.w3.org/2000/svg"
+                                        class="hidden w-5 h-5 text-gray-500" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                            d="M3 3l18 18" />
+                                    </svg>
+                                </button>
+                            </div>
+
                             <?php if (!empty($errors['password'])): ?>
                                 <p class="mt-2 text-red-600 text-sm"><?= esc($errors['password']) ?></p>
                             <?php endif; ?>
+
+                            <!-- Password Requirements -->
+                            <div id="password-requirements" class="space-y-1 mt-2 text-gray-700 text-sm">
+                                <p id="req-length" class="text-red-500">• At least 8 characters</p>
+                                <p id="req-number" class="text-red-500">• Contains a number</p>
+                                <p id="req-upper" class="text-red-500">• Contains an uppercase letter</p>
+                                <p id="req-lower" class="text-red-500">• Contains a lowercase letter</p>
+                                <p id="req-special" class="text-red-500">• Contains a special character (!@#$%^&*)</p>
+                            </div>
+
+                            <!-- Strength Meter -->
+                            <div class="mt-3">
+                                <div class="bg-gray-200 rounded-full w-full h-2 overflow-hidden">
+                                    <div id="strengthBar" class="bg-red-500 w-0 h-full transition-all"></div>
+                                </div>
+                                <p id="strengthText" class="mt-1 text-gray-600 text-xs">Strength: —</p>
+                            </div>
                         </div>
 
                         <!-- CONFIRM PASSWORD -->
                         <div>
                             <label class="block mb-2 font-semibold text-gray-700">Confirm Password</label>
-                            <input type="password" name="password_confirm" required
-                                placeholder="Confirm your password"
-                                class="px-4 py-4 border-2 <?= isset($errors['password_confirm']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
-                                aria-invalid="<?= isset($errors['password_confirm']) ? 'true' : 'false' ?>">
+
+                            <div class="relative">
+                                <input type="password" id="password_confirm" name="password_confirm" required
+                                    placeholder="Confirm your password"
+                                    class="px-4 py-4 border-2 <?= isset($errors['password_confirm']) ? 'border-red-500' : 'border-gray-200' ?> rounded-xl w-full text-gray-900 focus:outline-none focus:ring-[#8B7E74]/20"
+                                    aria-invalid="<?= isset($errors['password_confirm']) ? 'true' : 'false' ?>">
+
+                                <button type="button" id="toggleConfirmBtn" class="top-4 right-4 absolute p-1">
+                                    <svg id="icon-eye2" xmlns="http://www.w3.org/2000/svg"
+                                        class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                            d="M2.5 12s4-7 9.5-7 9.5 7 9.5 7-4 7-9.5 7S2.5 12 2.5 12z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                    </svg>
+
+                                    <svg id="icon-eye-off2" xmlns="http://www.w3.org/2000/svg"
+                                        class="hidden w-5 h-5 text-gray-500" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6"
+                                            d="M3 3l18 18" />
+                                    </svg>
+                                </button>
+                            </div>
+
                             <?php if (!empty($errors['password_confirm'])): ?>
                                 <p class="mt-2 text-red-600 text-sm"><?= esc($errors['password_confirm']) ?></p>
                             <?php endif; ?>
+
+                            <!-- Match Indicator -->
+                            <p id="matchText" class="mt-2 text-red-500 text-sm">• Passwords must match</p>
                         </div>
 
                         <!-- SUBMIT -->
@@ -192,6 +252,98 @@
 
         </main>
     </div>
+
+    <script>
+        // Eye toggle (main password)
+        document.getElementById("togglePasswordBtn").addEventListener("click", function() {
+            const input = document.getElementById("password");
+            const eye = document.getElementById("icon-eye");
+            const eyeOff = document.getElementById("icon-eye-off");
+
+            const isHidden = input.type === "password";
+            input.type = isHidden ? "text" : "password";
+            eye.classList.toggle("hidden");
+            eyeOff.classList.toggle("hidden");
+        });
+
+        // Eye toggle (confirm password)
+        document.getElementById("toggleConfirmBtn").addEventListener("click", function() {
+            const input = document.getElementById("password_confirm");
+            const eye = document.getElementById("icon-eye2");
+            const eyeOff = document.getElementById("icon-eye-off2");
+
+            const isHidden = input.type === "password";
+            input.type = isHidden ? "text" : "password";
+            eye.classList.toggle("hidden");
+            eyeOff.classList.toggle("hidden");
+        });
+
+        // Password strength + requirements
+        const passwordInput = document.getElementById("password");
+        const strengthBar = document.getElementById("strengthBar");
+        const strengthText = document.getElementById("strengthText");
+
+        const reqs = {
+            length: document.getElementById("req-length"),
+            number: document.getElementById("req-number"),
+            upper: document.getElementById("req-upper"),
+            lower: document.getElementById("req-lower"),
+            special: document.getElementById("req-special"),
+        };
+
+        passwordInput.addEventListener("input", function() {
+            const val = passwordInput.value;
+            let score = 0;
+
+            const tests = {
+                length: val.length >= 8,
+                number: /\d/.test(val),
+                upper: /[A-Z]/.test(val),
+                lower: /[a-z]/.test(val),
+                special: /[^A-Za-z0-9]/.test(val),
+            };
+
+            for (const key in tests) {
+                if (tests[key]) {
+                    reqs[key].classList.remove("text-red-500");
+                    reqs[key].classList.add("text-green-600");
+                    score++;
+                } else {
+                    reqs[key].classList.add("text-red-500");
+                    reqs[key].classList.remove("text-green-600");
+                }
+            }
+
+            // Strength bar visuals
+            const widths = ["0%", "20%", "40%", "60%", "80%", "100%"];
+            const colors = ["gray", "red", "orange", "yellow", "limegreen", "green"];
+
+            strengthBar.style.width = widths[score];
+            strengthBar.style.backgroundColor = colors[score];
+
+            const labels = ["—", "Very Weak", "Weak", "Okay", "Strong", "Very Strong"];
+            strengthText.textContent = "Strength: " + labels[score];
+        });
+
+        // Password match indicator
+        const confirmInput = document.getElementById("password_confirm");
+        const matchText = document.getElementById("matchText");
+
+        function updateMatch() {
+            if (confirmInput.value === passwordInput.value && confirmInput.value !== "") {
+                matchText.textContent = "• Passwords match";
+                matchText.classList.remove("text-red-500");
+                matchText.classList.add("text-green-600");
+            } else {
+                matchText.textContent = "• Passwords must match";
+                matchText.classList.add("text-red-500");
+                matchText.classList.remove("text-green-600");
+            }
+        }
+
+        passwordInput.addEventListener("input", updateMatch);
+        confirmInput.addEventListener("input", updateMatch);
+    </script>
 
 </body>
 
